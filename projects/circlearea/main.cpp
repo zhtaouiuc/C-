@@ -4,12 +4,16 @@
 int main()
 {
     using namespace std;
-    double r;
-    double pi=3.1415926;
-    double area;
+    long double r;
+    long double pi=3.1415926;
+    long double area;
     cout << "Enter the radius of your circle \n";
     cin >> r;
+    if (r>=0)
+    {
     area = pi * pow(r,2);
-    cout << "the area of the circle is \n" << area << endl;
+    cout << setprecision (8) << "the area of the circle is \n" << area << endl;}
+    else 
+       cout << "You cannot have a negative radius \n";
     return 0;
 }
