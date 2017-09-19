@@ -13,21 +13,17 @@ int main()
     if (n<1)
         cout << "n has to integers greater than 0 \n";
     else 
-        cout << "the" << n << "th number in the fibonacci sequence is" << fibonacci(n) << endl; 
-}
-
-int fibonacci(int number)
-{   
-    int sequence[3]={};
-    int first =1 ;
-    int second =1 ;
-    
-    for(int temp=1; temp<=number-2; temp++){
+    {
+    int sequence[3] = {0};
+    int first = 1;
+    int second = 1;
+    for(int temp=1; temp<=n-2; temp++){
     sequence[0]=first;
     sequence[1]=second;
     sequence[2]=first+second;
-    first=sequence[0]+sequence[1];
-    second= sequence[1]+sequence[2];
-}
-    return first+second;
+    first=sequence[1];
+    second= sequence[2];        
+    }
+    cout << "the" << n << "th number in the fibonacci sequence is" << sequence[2] << endl; 
+    }
 }
