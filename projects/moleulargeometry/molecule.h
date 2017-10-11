@@ -10,10 +10,12 @@ private:
     double *xcoord;
     double *ycoord;  
     double *zcoord; 
+    double **length;
 public:
     molecule();
     molecule(const char *m_title);
     ~molecule();
     void showinput();
+    void bondlength();
 };
 #endif    
