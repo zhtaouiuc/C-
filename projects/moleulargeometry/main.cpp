@@ -17,5 +17,7 @@ int main()
 molecule one("geo.dat");
 one.showinput();
 one.bondlength();
+one.unitvector();
+//one.bondangles();
 return 0;
 }

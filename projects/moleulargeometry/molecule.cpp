@@ -9,12 +9,6 @@
 
 using namespace std;
 
-int *charges;
-double *xcoord;
-double *ycoord;
-double *zcoord;
-
-
 //constructors
 molecule::molecule()
 {
@@ -79,5 +73,70 @@ for (int i=0; i<natm; i++)
 for (int j=0; j<i; j++)
     printf("%d %d %8.5f\n", i, j, length[i][j]);
 }
+for (int i=0; i<natm;i++)
+{delete [] length[i];
+//d//elete [] unitx[i];
+//d//elete [] unity[i];
+//d//elete [] unitz[i];
+//for (int j=0; j< i; j++)
+//delete [] bangles[i][j];
+//delete [] bangles[i];
+}
+delete [] length;
 }
 
+void molecule::unitvector()
+{for (int i=0; i<natm; i++)
+{
+for (int j=0; j<i; j++)
+    printf("%d %d %8.5f\n", i, j, length[i][j]);
+}
+//unitx = new double * [natm];
+//unity = new double * [natm];
+//unitz = new double * [natm];
+//for (int i=0; i<natm; i++)
+//{    unitx[i] = new double [i];
+//    unity[i] = new double [i];
+//    unitz[i] = new double [i];
+//}
+//for (int i=1; i<natm; i++)
+//{
+//for (int j=0; j<i; j++)
+//{
+//unitx[i][j] = -(xcoord[i]-xcoord[j])/length[i][j];
+//unity[i][j] = -(ycoord[i]-ycoord[j])/length[i][j];
+//unitz[i][j] = -(zcoord[i]-zcoord[j])/length[i][j];
+//}
+//}
+}
+
+//void molecule::bondangles()
+//{
+//unitvector();
+//bangles = new double ** [natm];
+//for (int i = 0; i<natm; i++)
+//{
+//for (int j = 0; j<i; j++)
+//bangles[i][j] = new double [j];
+//}
+//for (int i = 2; i<natm; i++)
+//{
+//for (int j = 1; j<i; j++)
+//{
+//for (int k = 0; k<j; k++)
+//bangles[i][j][k] = acos(unitx[j][i]*unitx[j][k]+unity[j][i]*unity[j][k]+unitz[j][i]*unitz[j][k]);
+//}
+//}
+//for (int i = 2; i<natm; i++)
+//{
+//for (int j = 1; j<i; j++)
+//{
+//for (int k = 0; k<j; k++)
+//{
+//if (length[i][j] <4.0 && length[j][k] <4.0)
+//{
+//printf("%d %d %d %8.5f\n",i,j,k,bangles[i][j][k]);
+//}
+//}
+//}}
+//}
