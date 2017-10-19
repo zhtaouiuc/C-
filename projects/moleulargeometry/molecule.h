@@ -23,5 +23,6 @@ public:
     void showinput();
     void bondlength();
     void bondangles();
+    void outofplaneangles();
 };
 #endif    

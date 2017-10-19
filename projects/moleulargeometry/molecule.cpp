@@ -23,13 +23,22 @@ unitx = new double * [natm];
 unity = new double * [natm];
 unitz = new double * [natm];
 for (int i=0; i<natm; i++)
-{    unitx[i] = new double [i];
-    unity[i] = new double [i];
-    unitz[i] = new double [i];
+{    unitx[i] = new double [natm];
+    unity[i] = new double [natm];
+    unitz[i] = new double [natm];
 }
 length = new double * [natm];
 for (int i=0; i <natm; i++)
     length[i] = new double[natm];
+
+
+bangles = new double ** [natm];
+for (int i = 0; i<natm; i++)
+{
+bangles[i] = new double * [natm];
+for (int j = 0; j<natm; j++)
+bangles[i][j] = new double [natm];
+}
 }
 
 molecule::molecule(const char *m_title)
@@ -47,13 +56,21 @@ unitx = new double * [natm];
 unity = new double * [natm];
 unitz = new double * [natm];
 for (int i=0; i<natm; i++)
-{    unitx[i] = new double [i];
-    unity[i] = new double [i];
-    unitz[i] = new double [i];
+{    unitx[i] = new double [natm];
+    unity[i] = new double [natm];
+    unitz[i] = new double [natm];
 }
 length = new double * [natm];
 for (int i=0; i <natm; i++)
     length[i] = new double[natm];
+
+bangles = new double ** [natm];
+for (int i = 0; i<natm; i++)
+{
+bangles[i] = new double * [natm];
+for (int j = 0; j<natm; j++)
+bangles[i][j] = new double [natm];
+}
 
 for (int i=0;i<natm;i++)
     input >> charges[i] >> xcoord[i] >> ycoord[i] >> zcoord[i];
@@ -70,9 +87,9 @@ delete [] ycoord;
 delete [] xcoord;
 delete [] charges;
 for (int i=0; i<natm; i++)
-{ delete [] unitx[i];
-  delete [] unity[i];
-  delete [] unitz[i];
+{ delete [] unitx[natm];
+  delete [] unity[natm];
+  delete [] unitz[natm];
 }
  delete [] unitx; 
  delete [] unity;
@@ -80,6 +97,16 @@ for (int i=0; i<natm; i++)
 for (int i=0; i<natm;i++)
 delete [] length[i];
 delete [] length;
+for (int i = 0; i<natm; i++)
+{
+for (int j = 0; j<natm; j++)
+{
+delete [] bangles[i][j];
+}
+delete [] bangles[i];
+}
+delete [] bangles;
+
 }
 
 void molecule::showinput()
@@ -102,8 +129,8 @@ cout << "Bond length between atoms: atom number 1, atom number 2, bond length" <
 for (int i=0; i<natm; i++)
 {
 for (int j=0; j<i; j++)
-    printf("%d %d %8.5f\n", i, j, length[i][j]);
-}
+{    printf("%d %d %8.5f\n", i, j, length[i][j]);
+}}
 }
 
 void molecule::unitvector()
@@ -115,6 +142,9 @@ for (int j=0; j<i; j++)
 unitx[i][j] = -(xcoord[i]-xcoord[j])/length[i][j];
 unity[i][j] = -(ycoord[i]-ycoord[j])/length[i][j];
 unitz[i][j] = -(zcoord[i]-zcoord[j])/length[i][j];
+unitx[j][i] = -unitx[i][j] ;
+unity[j][i] = -unity[i][j] ;
+unitz[j][i] = -unitz[i][j] ;
 }
 }
 }
@@ -122,20 +152,14 @@ unitz[i][j] = -(zcoord[i]-zcoord[j])/length[i][j];
 void molecule::bondangles()
 {
 unitvector();
-bangles = new double ** [natm];
+
 for (int i = 0; i<natm; i++)
 {
-bangles[i] = new double * [i];
-for (int j = 0; j<i; j++)
-bangles[i][j] = new double [j];
-}
-
-for (int i = 2; i<natm; i++)
+for (int j = 0; j<natm; j++)
 {
-for (int j = 1; j<i; j++)
+for (int k = 0; k<natm; k++)
 {
-for (int k = 0; k<j; k++)
-{
+if (i!=j && k!=i && k!=j)
 bangles[i][j][k] = acos(-unitx[i][j]*unitx[j][k]-unity[i][j]*unity[j][k]-unitz[i][j]*unitz[j][k])*180.0/PI;
 }
 }
@@ -144,23 +168,49 @@ bangles[i][j][k] = acos(-unitx[i][j]*unitx[j][k]-unity[i][j]*unity[j][k]-unitz[i
 cout<<"here is a list of bond angles" << endl;
 for (int i = 2; i<natm; i++)
 {
-for (int j = 1; j<i; j++)
+for (int j = 1; j<natm; j++)
 {
-for (int k = 0; k<j; k++)
+for (int k = 0; k<j && k<i; k++)
 {
-if (length[i][j] <4.0 && length[j][k] <4.0)
+if (j !=i && length[i][j] <4.0 && length[j][k] <4.0)
 {
 printf("%d %d %d %8.5f\n",i,j,k,bangles[i][j][k]);
 }
 }
 }}
-for (int i = 0; i<natm; i++)
-{
-for (int j = 0; j<i; j++)
-{
-delete [] bangles[i][j];
 }
-delete [] bangles[i];
+
+void molecule::outofplaneangles()
+{
+unitvector();
+double theta;
+double ejkl_x;
+double ejkl_y;
+double ejkl_z;
+
+cout << "Here is a list of out of plane angles:"<< endl;
+for (int i=0; i<natm; i++)
+{
+for (int j=0; j<natm; j++)
+{
+for (int k=0; k<natm;k++)
+{
+for (int l=0; l<j; l++)
+{
+if (j != i && k!=i && k!=j && l!=i && l!=k && l!=j){
+if (length[i][k]<4.0 && length[j][k]<4.0 && length[k][l]<4.0 )
+{
+ejkl_x = (unity[k][j]*unitz[k][l] - unitz[k][j]*unity[k][l]);
+ejkl_y = (unitz[k][j]*unitx[k][l] - unitx[k][j]*unitz[k][l]);
+ejkl_z = (unitx[k][j]*unity[k][l] - unity[k][j]*unitx[k][l]);
+theta = (ejkl_x*unitx[k][i]+ejkl_y*unity[k][i]+ejkl_z*unitz[k][i])/sin(bangles[j][k][l]/180.0*PI) ;
+if (theta>1.0) {theta = asin(1.0)*180/PI;}
+else if (theta<-1.0) {theta = asin(-1.0)*180/PI;}
+else {theta = asin(theta)*180/PI;}
+printf("%d %d %d %d %8.5f\n",i,j,k,l,theta);
 }
-delete [] bangles;
+}}
+}
+}
+}
 }

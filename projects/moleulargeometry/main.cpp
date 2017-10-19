@@ -18,5 +18,6 @@ molecule one("geo.dat");
 one.showinput();
 one.bondlength();
 one.bondangles();
+one.outofplaneangles();
 return 0;
 }
