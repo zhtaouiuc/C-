@@ -11,7 +11,7 @@
 #include "Eigen/Core"
 using namespace std;
 const static double masses[]={0.0000,1.00782503223, 3.0160293201,  6.0151228874,9.012183065,10.01293695,
-12.000000,14.003074004,15.99491461957,18.99840316273};
+12.000000,14.003074004,15.99491461957,18.99840316273,20.1797,22.9897,24.305,26.9815,28.0855,30.9738,32.065,35.453};
 
 //constructors 
 harvib::harvib()
@@ -100,54 +100,66 @@ void harvib::frequency()
 double **hessian = new double * [natm*3];
 for (int i=0; i<natm*3; i++)
 hessian[i] = new double [natm*3];
-int count;
-int count2=0;
-for (int i=0; i<3 ;i++)
+int count=0;
+for (int i=0; i< 3*natm ; i++)
 {
-count =0;
-for (int j=0; j<natm; j++)
-{
-for (int k=0; k<natm*3; k++)
-{hessian[k][count2] = hessianinput[count][i]; 
-//cout << "hessian"<< k << count2<<endl;
-//cout << "input" << count << i<< hessianinput[count][i]<<endl;
-count+=1;
-}
-count2+=1;
-}
+for (int k=0; k<3*natm; k++)
+
+{hessian[i][k] = 0.0;
+hessian[i][k] = hessianinput[(int) count/3][k%3]; 
+
+//cout<< "i  " << i << "  k  " << k << "  count/3  " << count/3 << "  k%3  " << k%3 <<endl ;
+count+=1;	
+
 }
 
-//cout << "test" << hessian[1][1]<<endl;
+}
+
 
 //for (int i=0; i<natm*3;i++)
 //cout << hessian[i][i]<<endl;
-int count3;
-int count4 = 0;
-for (int i =0; i< 3; i++)
+
+
+//cout << "test" << hessian[1][1]<<endl;
+for (int i =0; i< 3*natm; i++)
 {
-count3=0;
-for (int j=0; j <natm; j++)
+for (int j=0; j <3*natm; j++)
 {
-for (int k=0; k<3; k++)
-{
-hessian[count3][count4] = hessian[count3][count4] / pow(masses[(int) charges[i]]*masses[(int) charges[k]],0.5);
-//cout<< "count3" << count3 << "count4" << count4 << "i" << i << "k" << k <<endl ;
-count3+=1;
-}}
-count4+=1;
+hessian[i][j] = hessian[i][j] / pow(masses[(int) charges[(i/3)]]*masses[(int) charges[(j/3)]],0.5);
+//cout<< "i  " << i << "  j  " << j << "  charges[(i/3)  " << (int) charges[(i/3)] << "  charges[(j/3)  " << (int)charges[(j/3)] <<endl ;
+
 }
+}
+
+//for (int i=0; i<natm*3;i++)
+//cout << hessian[i][i]<<endl;
+
 
 typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
 Matrix I (3*natm,3*natm);
 for (int i=0; i<3*natm; i++)
 {
 for (int j=0; j<3*natm; j++)
+{I(i,j) = 0.0;
 I(i,j) = hessian[i][j];
-}
-cout <<I <<endl;
+}}
 
+for (int i =0; i<3*natm; i++)
+delete [] hessian[i];
+delete [] hessian;
+
+
+//cout << I<< endl;
+cout << "Here is a list of frequencies of harmonic vibrational modes (cm-1):" <<endl;
 Eigen::SelfAdjointEigenSolver<Matrix> solver(I);
   Matrix evecs = solver.eigenvectors();
   Matrix evals = solver.eigenvalues();
-cout << evals <<endl;
+
+// the eigenvalues are in the units of hartree/(bohr)^2/(amu); to get cm-1, we need to convert amu to mass of electrons
+// first and then take a square root of hartree^2 to then convert hartree to cm-1. 1amu = 1822.89 electron rest mass
+
+for (int i=0; i<3*natm; i++)
+{evals(i) = pow(evals(i)/1822.89,0.5) * 219474;
+cout << evals(i) << endl;
+}
 }
