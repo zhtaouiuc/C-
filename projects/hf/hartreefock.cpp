@@ -9,6 +9,7 @@
 #include "../../resources/Eigen/Dense"
 #include "../../resources/Eigen/Eigenvalues"
 #include "../../resources/Eigen/Core"
+#include <string>
 using namespace std;
 
 //constructors
@@ -36,24 +37,35 @@ core[i]= new double [num];
 hartreefock::hartreefock(const char *m_enucdat, const char *m_overlapdat, const char *m_kineticdat,
                          const char *m_nucleardat)
 {
-cout << "what:";
 strcpy(enucdat, m_enucdat);
-cout << enucdat;
 
 ifstream enucinput(enucdat);
 enucinput >> enuc;
-cout << enuc;
+//cout << enuc;
 enucinput.close();
 
+
 strcpy(overlapdat,m_overlapdat);
+string *line = new string[30];
+int nline=0;
 ifstream overlapinput(overlapdat);
+if (overlapinput.is_open())
+{ while (getline(overlapinput, line[nline]) && line[nline].size()>0)
+ {nline++;}
+}
 
-string line;
-num =0;
 
-while(getline(overlapinput, line))
-{num +=1;
-cout<< num;}
+double *values = new double [nline];
+int * first = new int[nline];
+int *second = new int[nline];
+
+overlapinput.clear();
+overlapinput.seekg(0,ios::beg);
+
+for (int i=0; i<nline; i++)
+overlapinput >> first[i]>> second[i] >> values[i];
+
+num = first[nline-1];
 
 overlap = new double*[num];
 kinetic = new double*[num];
@@ -67,18 +79,18 @@ nuclear[i] = new double [num];
 core[i]= new double [num];
 }
 
-int a=0;
-int b=0;
-for (int i=0; i<num; i++)
-{overlapinput >> a >> b >>overlap[a-1][b-1];
-overlap[b-1][a-1] = overlap[a-1][b-1];
-}
 
+for (int i=0; i<num; i++)
+{overlap[first[i]][second[i]]= values[i];
+overlap[second[i]][first[i]] = values[i];
+}
 overlapinput.close();
 
+int a=0;
+int b=0;
 strcpy(kineticdat,m_kineticdat);
 ifstream kineticinput(kineticdat);
-for (int i=0; i<num; i++)
+for (int i=0; i<nline; i++)
 {kineticinput>> a >> b >> kinetic[a-1][b-1];
 kinetic[b-1][a-1] = kinetic[a-1][b-1];
 }
@@ -87,9 +99,10 @@ kineticinput.close();
 
 strcpy(nucleardat,m_nucleardat);
 ifstream nuclearinput(nucleardat);
-for (int i=0; i<num; i++)
+for (int i=0; i<nline; i++)
 {nuclearinput >> a >> b >> nuclear[a-1][b-1];
 nuclear[b-1][a-1] = nuclear[a-1][b-1];
+//cout << " a " << a << " b " << b << endl;
 }
 
 nuclearinput.close();
@@ -119,11 +132,15 @@ for (int i=0; i<num; i++)
 for (int j=0; j<num; j++)
 {
 core[i][j] = kinetic[i][j] + nuclear[i][j];
-cout << core[i][j];
+cout << "  " << core[i][j] << "  ";
 }
 cout << endl;
 }
+
+//for (int i=0; i<num; i++)
+//cout << core[i][i];
 }
+
 
 
 
