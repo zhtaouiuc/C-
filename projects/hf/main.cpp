@@ -14,4 +14,5 @@ int main()
 hartreefock h2o("h2o_enuc.dat", "h2o_overlap.dat", "h2o_kinetic.dat", "h2o_nuclear.dat");
 h2o.print1e();
 h2o.store2e("h2o_2e.dat");
+h2o.den();
 }

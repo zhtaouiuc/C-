@@ -20,19 +20,28 @@ private:
 
 // read in two electron integral
     double *TEI;
-
+    int *index;   
+    int super;
+ 
 // build orthogonal matrix 
     double **ortho;
     void orthomatrix();
 
+// build fock matrix
+    double **fock; 
+    void fockbuild();
+
 // build density matrix
     int nocc; //number of occupied orbitals
     int iter; //number of iteration 
-    double **fock; 
     double **densa;
     double **densb;
-    void deninitial();
     
+// calculate energy/convergence test
+    double Eelec1;
+    double Eelec2;
+    void convergence();
+
 // matrix multiplication
     void matrixmu(double **ma, double **mb, double **mc,int rownuma, int colnuma, int rownumb, int colnumb);
       
@@ -43,5 +52,6 @@ public:
     ~hartreefock();
     void print1e();  //build Hcore
     void store2e(const char *m_2edat);  //store 2e integral
+    void den();
 };
 #endif

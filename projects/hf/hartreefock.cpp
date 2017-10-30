@@ -12,7 +12,9 @@
 #include <string>
 using namespace std;
 
-typede::Matrix<double, Eigen::Dynamicgen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;, Eigen::Dynamic, Eigen::RowMajor> Matrix;
+const double energyconv = 1.0e-5;
+const double densityconv = 1.0e-5;
+
 
 //constructors
 hartreefock::hartreefock()
@@ -23,16 +25,29 @@ strcpy(kineticdat,"nodat");
 strcpy(nucleardat,"nodat");
 num = 5;
 enuc = 0.0;
+Eelec1 = 0.0;
+Eelec2 = 0.0;
+iter = 0;
+super = 0;
 overlap = new double*[num];
 kinetic = new double*[num];
 nuclear = new double*[num];
 core = new double*[num];
+densa = new double*[num];
+densb = new double *[num];
+fock = new double *[num];
+index = new int [super];
+ortho = new double *[num];
 for (int i=0; i<num; i++)
 {
 overlap[i] = new double [num];
 kinetic[i] = new double [num];
 nuclear[i] = new double [num];
 core[i]= new double [num];
+densa[i] = new double [num];
+densb[i] = new double [num];
+fock [i] = new double [num];
+ortho[i] = new double [num];
 }
 }
 
@@ -56,11 +71,10 @@ if (overlapinput.is_open())
  {nline++;}
 }
 
-
+iter = 0;
 double *values = new double [nline];
 int * first = new int[nline];
 int *second = new int[nline];
-
 overlapinput.clear();
 overlapinput.seekg(0,ios::beg);
 
@@ -68,23 +82,34 @@ for (int i=0; i<nline; i++)
 overlapinput >> first[i]>> second[i] >> values[i];
 
 num = first[nline-1];
+super = num*(num+1)/2+num;
+index = new int [super];
 
+ortho = new double *[num];
 overlap = new double*[num];
 kinetic = new double*[num];
 nuclear = new double*[num];
 core = new double*[num];
+densa = new double*[num];
+densb = new double *[num];
+fock = new double *[num];
 for (int i=0; i<num; i++)
 {
 overlap[i] = new double [num];
 kinetic[i] = new double [num];
 nuclear[i] = new double [num];
 core[i]= new double [num];
+densa[i] = new double [num];
+densb[i] = new double [num];
+fock [i] = new double [num];
+ortho[i] = new double [num];
 }
 
 
-for (int i=0; i<num; i++)
+for (int i=0; i<nline-1; i++)
 {overlap[first[i]][second[i]]= values[i];
 overlap[second[i]][first[i]] = values[i];
+cout << "first[i] " << first[i] << "second[i] " << second[i] << "values[i] " << values[i] << endl;
 }
 overlapinput.close();
 
@@ -108,6 +133,9 @@ nuclear[b-1][a-1] = nuclear[a-1][b-1];
 }
 
 nuclearinput.close();
+
+delete [] first;
+delete [] second;
 }
 
 hartreefock::~hartreefock()
@@ -118,11 +146,20 @@ delete [] overlap[i];
 delete [] kinetic[i];
 delete [] nuclear[i];
 delete [] core[i];
+delete [] densa[i];
+delete [] densb[i];
+delete [] fock[i];
+delete [] ortho[i];
 }
 delete [] overlap;
 delete [] kinetic;
 delete [] nuclear;
 delete [] core;
+delete [] densa;
+delete [] densb;
+delete [] fock;
+delete [] index;
+delete [] ortho;
 }
 
 
@@ -138,14 +175,23 @@ cout << "  " << core[i][j] << "  ";
 }
 cout << endl;
 }
+
+cout << "\n this is the overlap matrix:\n";
+for (int i=0; i<num; i++)
+{
+for (int j=0; j<num; j++)
+{
+cout << "  " << overlap[i][j] << "  ";
+}
+cout << endl;
+}
+
 }
 
 void hartreefock::store2e(const char *m_2edat)
 {
 FILE *input;
 double val;
-int super = num*(num+1)/2+num;
-int *index = new int [super];
 int i =0;
 int j=0;
 int k=0;
@@ -196,6 +242,7 @@ for (int i = 0; i< num ; i++)
 eigenvectors[i] = new double [num];
 }
 
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
 Matrix I (num, num);
 for (int i =0; i<num; i++)
 {
@@ -205,75 +252,175 @@ I(i,j) = overlap[i][j];
 Eigen::SelfAdjointEigenSolver<Matrix> solver(I);
   Matrix evecs = solver.eigenvectors();
   Matrix evals = solver.eigenvalues();
+
+cout << evals<<endl;
 for (int i = 0 ; i<num; i++)
 {
 eigenvalues[i][i] = pow(evals(i),-0.5);
+cout << "evals(i) " << evals(i) << " eigenvalues[i][i] " << eigenvalues[i][i]<<endl;
 for (int j=0; j<num; j++)
 eigenvectors[i][j]= evecs(i,j);
 }
 
-ortho = new double *[num];
+
+double **orthotemp = new double *[num];
 for (int i = 0; i< num ; i++)
-ortho[i] = new double [num];
+orthotemp[i] = new double [num];
 
-matrixmu(eigenvalues,eigenvectors,ortho, num, num, num, num);
-matrixmu(eigenvectors, ortho, ortho, num,num,num, num);
+matrixmu(eigenvalues,eigenvectors,orthotemp, num, num, num, num);
+matrixmu(eigenvectors, orthotemp, ortho, num,num,num, num);
 
+for (int i = 0; i< num ; i++)
+{
+for (int j=0; j<num; j++)
+cout << "  " << eigenvalues[i][j] << "  ";
+cout << endl;
+}
+for (int i = 0; i< num ; i++)
+{
+delete [] eigenvalues[i];
+delete [] eigenvectors[i];
+delete [] orthotemp[i];
+}
+delete [] eigenvalues;
+delete [] eigenvectors; 
+delete [] orthotemp;
 }
 
-void hartreefock::deninitial();
+void hartreefock::fockbuild()
 {
-if (iter == 0)
+
+int ij =0;
+int kl =0;
+int ijkl =0;
+int ik =0;
+int jl=0;
+int ikjl = 0;
+
+if (iter ==0)
+{for (int i =0; i<num; i++)
 {
-double **fockinitial = new double *[num];
-for (int i=0; i< num; i++)
-fockinitial[i] = new double [num];
+for (int j=0; j<num; j++)
+{
+fock[i][j] = 0.0;
+fock[i][j] = core[i][j];
+}}}
 
-matrixmu(core,ortho,fockinitial,num,num,num,num);
-matrixmu(ortho,fockinitial,num,num,num,num);
+else
+{
+for (int i =0; i<num; i++)
+{
+for (int j=0; j<num; j++)
+{fock[i][j] = core[i][j];
+for (int k=0; k<num; k++)
+{
+for (int l=0; l<num; l++)
+{
+ij = (i>j) ? index[i]+j : index[j]+i;
+kl = (k>l) ? index[k]+l : index[l]+l;
+ijkl = (ij>kl) ? index[ij]+kl : index[kl]+ij;
+cout << " i " <<i<< " j " <<j<<" ij "<< ij <<" k " << k << " l " <<l<< " kl "<<kl<<" ijkl " <<ijkl << endl;
+ik = (i>k) ? index[i]+k : index[k]+i;
+jl = (j>l) ? index[j]+l : index[l]+j;
+ikjl = (ik>jl) ? index[ik]+jl : index[jl]+ik;
+fock[i][j]+= densa[k][l]*2*(TEI[ijkl]-TEI[ikjl]);
+}}}}
+}
+}
 
+void hartreefock::den()
+{
+
+orthomatrix();
+fockbuild();
+double ** tempfock = new double *[num];
+double ** tempfock2 = new double *[num];
+for (int i =0; i<num; i++)
+{
+tempfock[i] = new double [num];
+tempfock2[i] = new double [num];
+}
+
+matrixmu(fock,ortho,tempfock,num,num,num,num);
+matrixmu(ortho,tempfock,tempfock2,num,num,num,num);
+
+typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Matrix;
 Matrix F0 (num,num);
 
 for (int i =0; i<num; i++)
 {
 for (int j=0; j<num; j++)
-F0(i,j) = fockinitial[i][j];
+F0(i,j) = tempfock2[i][j];
 }
 
-Eigen::SelfAdjointEigenSolver<Matrix> solver(I);
+Eigen::SelfAdjointEigenSolver<Matrix> solver(F0);
   Matrix evecs = solver.eigenvectors();
   Matrix evals = solver.eigenvalues();
 
-double **eigenvectorsini = new double *[num];
-double **temp = new double *[temp];
+double **eigenvectors = new double *[num];
+double **temp = new double *[num];
 for (int i = 0; i< num ; i++)
 {
-eigenvectorsini[i] = new double [num];
+eigenvectors[i] = new double [num];
 temp[i] = new double [num];
 for (int j=0; j<num; j++)
 {
-eigenvectorsini[i][j] = evecs(i,j);
+eigenvectors[i][j] = evecs(i,j);
 }}
 
-matrixmu(ortho,eigenvectorsini,temp,num,num,num,num);
-
-
-double **densa = new double *[num];
-for (int i=0; i< num; i++)
-densa[i] = new double [num];
+matrixmu(ortho,eigenvectors,temp,num,num,num,num);
 
 for (int i=0; i< num; i++)
 {
 for (int j=0; j< num; j++)
 {
 for (int k=0; k< nocc; k++)
-densa[i][j]+= temp[i][k]*temp[k][j];
-}
+densb[i][j]+= temp[i][k]*temp[k][j];
 }
 }
 
-else 
+for (int i = 0; i< num ; i++)
 {
+delete [] tempfock[i];
+delete [] tempfock2[i];
+delete [] eigenvectors[i];
+delete [] temp[i];
+}
+delete [] tempfock;
+delete [] tempfock2;
+delete [] eigenvectors;
+delete [] temp;
 
+convergence();
+}
+
+void hartreefock::convergence()
+{
+double dendiff=0;
+
+for (int i=0; i< num; i++)
+{
+for (int j=0; j< num; j++)
+{Eelec2 += densb[i][j]  * (core[i][j]+fock[i][j]); 
+dendiff += pow(pow(densb[i][j]-densa[i][j],2),0.5);
+}}
+
+while (dendiff>densityconv && abs(Eelec2-Eelec1)>energyconv &&iter<100)
+{
+iter+=1;
+for (int i=0; i< num; i++)
+{
+for (int j =0; j< num; j++)
+densa[i][j] = densb[i][j];
+}
+Eelec1 = Eelec2; 
+den();
+}
+
+if (iter >100) {cout << " the calculation is not converged."<< endl;}
+else
+{cout<< "after # iteration = " << iter<< endl;
+cout << "the total energy of your system is " << Eelec2+enuc << endl;
 }
 }
+
