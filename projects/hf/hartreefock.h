@@ -25,8 +25,9 @@ private:
  
 // build orthogonal matrix 
     double **ortho;
+    double **transortho;
     void orthomatrix();
-
+    
 // build fock matrix
     double **fock; 
     void fockbuild();
@@ -36,7 +37,8 @@ private:
     int iter; //number of iteration 
     double **densa;
     double **densb;
-    
+    void den();
+ 
 // calculate energy/convergence test
     double Eelec1;
     double Eelec2;
@@ -44,14 +46,14 @@ private:
 
 // matrix multiplication
     void matrixmu(double **ma, double **mb, double **mc,int rownuma, int colnuma, int rownumb, int colnumb);
-      
+    void transpose(double **ma, double **mb, int row, int col);  
 public:
     hartreefock();
     hartreefock(const char *m_enucdat, const char *m_overlapdat, const char *m_kineticdat,
-                const char *m_nucleardat);
+                const char *m_nucleardat, const int m_nocc);
     ~hartreefock();
     void print1e();  //build Hcore
     void store2e(const char *m_2edat);  //store 2e integral
-    void den();
+    void hfenergy();
 };
 #endif
