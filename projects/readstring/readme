@@ -1,0 +1,2 @@
+this small program proves that if there is no bug when the first object is created, there shouldnt be problems
+with creating more than one object.

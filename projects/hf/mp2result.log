@@ -1,0 +1,196 @@
+start a new calculation.
+end of constructorIter    E(elec)               E(tot)                Ediff              Dendiff
+mo energies-32.5783
+mo energies-8.08154
+mo energies-7.55009
+mo energies-7.36397
+mo energies-7.34714
+mo energies-4.0023
+mo energies-3.98111
+0    -125.842077437699    -117.839710375889     125.842077437699       8.130304121003
+mo energies-18.8244
+mo energies-0.66411
+mo energies-0.111054
+mo energies0.134211
+mo energies0.309107
+mo energies0.559147
+mo energies0.677473
+1     -78.286583284743     -70.284216222932      47.555494152956       7.026491112291
+mo energies-20.6449
+mo energies-1.36861
+mo energies-0.616803
+mo energies-0.596038
+mo energies-0.537244
+mo energies0.407203
+mo energies0.496276
+2     -84.048316253435     -76.045949191624       5.761732968692       1.586429080972
+mo energies-20.1851
+mo energies-1.18424
+mo energies-0.533475
+mo energies-0.403982
+mo energies-0.34938
+mo energies0.495066
+mo energies0.598187
+3     -82.716965960854     -74.714598899043       1.331350292581       0.329292871348
+mo energies-20.2785
+mo energies-1.21676
+mo energies-0.552465
+mo energies-0.439018
+mo energies-0.396521
+mo energies0.476848
+mo energies0.582233
+4     -82.987140757003     -74.984773695193       0.270174796149       0.120465253224
+mo energies-20.2611
+mo energies-1.20955
+mo energies-0.548428
+mo energies-0.4345
+mo energies-0.386963
+mo energies0.478901
+mo energies0.587132
+5     -82.938133187513     -74.935766125703       0.049007569490       0.043060496804
+mo energies-20.2637
+mo energies-1.21023
+mo energies-0.548566
+mo energies-0.436144
+mo energies-0.388157
+mo energies0.477945
+mo energies0.587291
+6     -82.946271078699     -74.943904016889       0.008137891186       0.020309423061
+mo energies-20.263
+mo energies-1.20984
+mo energies-0.548207
+mo energies-0.43624
+mo energies-0.387706
+mo energies0.477827
+mo energies0.587786
+7     -82.944486784914     -74.942119723104       0.001784293785       0.009137578496
+mo energies-20.263
+mo energies-1.20978
+mo energies-0.548094
+mo energies-0.436407
+mo energies-0.387671
+mo energies0.47771
+mo energies0.587957
+8     -82.944617252243     -74.942250190433       0.000130467329       0.004460301971
+mo energies-20.2629
+mo energies-1.20974
+mo energies-0.548026
+mo energies-0.436466
+mo energies-0.387622
+mo energies0.477664
+mo energies0.588053
+9     -82.944503500703     -74.942136438892       0.000113751541       0.002127028935
+mo energies-20.2629
+mo energies-1.20972
+mo energies-0.547995
+mo energies-0.436498
+mo energies-0.387605
+mo energies0.477641
+mo energies0.588097
+10     -82.944478930626     -74.942111868815       0.000024570077       0.001026790950
+mo energies-20.2629
+mo energies-1.20971
+mo energies-0.547979
+mo energies-0.436513
+mo energies-0.387595
+mo energies0.477629
+mo energies0.588119
+11     -82.944461627685     -74.942094565874       0.000017302941       0.000494443064
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547972
+mo energies-0.43652
+mo energies-0.387591
+mo energies0.477624
+mo energies0.58813
+12     -82.944454198375     -74.942087136564       0.000007429310       0.000238548591
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547968
+mo energies-0.436524
+mo energies-0.387589
+mo energies0.477621
+mo energies0.588135
+13     -82.944450445051     -74.942083383241       0.000003753324       0.000115056300
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547966
+mo energies-0.436526
+mo energies-0.387588
+mo energies0.47762
+mo energies0.588137
+14     -82.944448661686     -74.942081599875       0.000001783365       0.000055511004
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547965
+mo energies-0.436526
+mo energies-0.387587
+mo energies0.477619
+mo energies0.588138
+15     -82.944447795931     -74.942080734120       0.000000865755       0.000026782106
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547965
+mo energies-0.436527
+mo energies-0.387587
+mo energies0.477619
+mo energies0.588139
+16     -82.944447379017     -74.942080317206       0.000000416914       0.000012922161
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547965
+mo energies-0.436527
+mo energies-0.387587
+mo energies0.477619
+mo energies0.588139
+17     -82.944447177685     -74.942080115875       0.000000201331       0.000006234890
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547965
+mo energies-0.436527
+mo energies-0.387587
+mo energies0.477619
+mo energies0.588139
+18     -82.944447080565     -74.942080018755       0.000000097120       0.000003008344
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547965
+mo energies-0.436527
+mo energies-0.387587
+mo energies0.477619
+mo energies0.588139
+19     -82.944447033699     -74.942079971889       0.000000046866       0.000001451536
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547965
+mo energies-0.436527
+mo energies-0.387587
+mo energies0.477619
+mo energies0.588139
+20     -82.944447011086     -74.942079949276       0.000000022613       0.000000700372
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547965
+mo energies-0.436527
+mo energies-0.387587
+mo energies0.477619
+mo energies0.588139
+21     -82.944447000175     -74.942079938365       0.000000010911       0.000000337933
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547965
+mo energies-0.436527
+mo energies-0.387587
+mo energies0.477619
+mo energies0.588139
+22     -82.944446994911     -74.942079933100       0.000000005264       0.000000163055
+mo energies-20.2629
+mo energies-1.2097
+mo energies-0.547965
+mo energies-0.436527
+mo energies-0.387587
+mo energies0.477619
+mo energies0.588139
+23     -82.944446992371     -74.942079930560       0.000000002540       0.000000078675
+MP2 energy is -24.8567
+the destructor is called 
